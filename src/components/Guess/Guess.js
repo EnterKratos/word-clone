@@ -6,7 +6,8 @@ function Guess({value = undefined}) {
   return (
     <p className="guess">
       {range(NUM_OF_CHARACTERS_ALLOWED).map((i) => {
-        return <span key={i} className="cell">{value ? value[i] : undefined}</span>
+        const status = value?.results[i].status;
+        return <span key={i} className={`cell${' ' + status}`}>{value ? value.guess[i] : undefined}</span>
       })}
     </p>
   );
