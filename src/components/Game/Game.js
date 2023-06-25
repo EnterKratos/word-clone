@@ -18,7 +18,7 @@ function Game() {
       return false;
     }
 
-    setGuesses([...guesses, guess])
+    setGuesses([...guesses, guess]);
     return true;
   }
 
