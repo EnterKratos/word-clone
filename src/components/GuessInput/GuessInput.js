@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function GuessInput() {
+function GuessInput({onGuess}) {
   const [guess, setGuess] = useState('');
 
   return (
@@ -9,7 +9,11 @@ function GuessInput() {
       onSubmit={event => {
         event.preventDefault();
         console.log({ guess: guess })
-        setGuess('');
+        if(onGuess(guess)) {
+          setGuess('');
+        } else {
+          alert('You already guessed that answer 🙃');
+        }
       }}
     >
       <label
