@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NUM_OF_CHARACTERS_ALLOWED } from "../../constants";
 
-function GuessInput({onGuess}) {
+function GuessInput({onGuess, disabled}) {
   const [guess, setGuess] = useState('');
 
   return (
@@ -33,6 +33,7 @@ function GuessInput({onGuess}) {
         maxLength={NUM_OF_CHARACTERS_ALLOWED}
         value={guess}
         onChange={event => setGuess(event.target.value.toUpperCase())}
+        disabled={disabled}
       />
     </form>
   );

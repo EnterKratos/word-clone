@@ -5,6 +5,8 @@ import { WORDS } from '../../data';
 import GuessInput from "../GuessInput";
 import GuessResults from "../GuessResults";
 import { checkGuess } from "../../game-helpers";
+import { NUM_OF_GUESSES_ALLOWED } from "../../constants";
+import Banner from "../Banner";
 
 // Pick a random word on every pageload.
 const answer = sample(WORDS);
@@ -13,25 +15,56 @@ console.info({ answer });
 
 function Game() {
   const [guesses, setGuesses] = useState([]);
+  const [gameStatus, setGameStatus] = useState('playing');
 
   const onGuess = guess => {
-    if (guesses.includes(guess)) {
+    if (guesses.some(g => g.guess === guess)) {
       return false;
     }
 
-    setGuesses([
+    const results = checkGuess(guess, answer);
+
+    const newGuesses = [
       ...guesses, {
-        guess: guess,
-        results: checkGuess(guess, answer),
+        guess,
+        results,
       }
-    ]);
+    ];
+
+    setGuesses(newGuesses);
+
+    if (results.every(r => r.status === 'correct')) {
+      setGameStatus('win');
+    } else if (newGuesses.length >= NUM_OF_GUESSES_ALLOWED) {
+      setGameStatus('lose');
+    }
+
     return true;
+  }
+
+  let banner = null;
+  if (gameStatus !== 'playing') {
+    if (gameStatus === 'win') {
+      banner = (
+        <Banner variant="happy">
+          <strong>Congratulations!</strong> Got it in
+          <strong> {guesses.length} {`guess${guesses.length > 1 ? 'es' : ''}`}</strong>.
+        </Banner>
+      );
+    } else {
+      banner = (
+        <Banner variant="sad">
+          Sorry, the correct answer is <strong>{answer}</strong>.
+        </Banner>
+      );
+    }
   }
 
   return (
     <>
       <GuessResults guesses={guesses}/>
-      <GuessInput onGuess={onGuess}/>
+      <GuessInput onGuess={onGuess} disabled={gameStatus !== 'playing'} />
+      {banner}
     </>
   );
 }
